@@ -29,6 +29,21 @@ append_to_bashrc() {
   fi
 }
 
+append_to_bash_profile() {
+  local text="$1" bash_profile
+  local skip_new_line="${2:-0}"
+
+  bash_profile="$HOME/.bash_profile"
+
+  if ! grep -Fqs "$text" "$bash_profile"; then
+    if [ "$skip_new_line" -eq 1 ]; then
+      printf "%s\n" "$text" >> "$bash_profile"
+    else
+      printf "\n%s\n" "$text" >> "$bash_profile"
+    fi
+  fi
+}
+
 trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
@@ -88,6 +103,8 @@ tap "thoughtbot/formulae"
 tap "homebrew/services"
 
 # Unix
+brew "automake"
+brew "autoconf"
 brew "git"
 brew "openssl"
 brew "rcm"
@@ -95,6 +112,8 @@ brew "the_silver_searcher"
 brew "bash"
 brew "bash-completion"
 brew "watch"
+brew "libtool"
+brew "unixodbc"
 
 # Heroku
 brew "heroku-toolbelt"
@@ -110,7 +129,9 @@ brew "imagemagick"
 brew "phantomjs"
 
 # Programming languages
+brew "readline"
 brew "libyaml" # should come after openssl
+brew "libxslt"
 
 # Databases
 brew "postgres", restart_service: true
@@ -129,6 +150,43 @@ append_to_bashrc "
     . $(brew --prefix)/etc/bash_completion
   fi
 "
+
+# ASDF - version manager
+
+if ! [ -d "$HOME/.asdf" ]; then
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.2.0
+
+  append_to_bash_profile ". $HOME/.asdf/asdf.sh"
+  append_to_bash_profile ". $HOME/.asdf/completions/asdf.bash"
+fi
+
+# Ensure ADSF is loaded
+
+source ~/.bash_profile
+
+# Install Ruby
+
+if ! [ -d "$HOME/.asdf/plugins/ruby" ]; then
+  asdf plugin-add ruby https://github.com/asdf-vm/asdf-ruby.git
+  LDFLAGS="-L/usr/local/opt/openssl/lib" CPPFLAGS="-I/usr/local/opt/openssl/include" asdf install ruby 2.3.3
+  asdf global ruby 2.3.3
+fi
+
+# Install Erlang
+
+if ! [ -d "$HOME/.asdf/plugins/erlang" ]; then
+  asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
+  asdf install erlang 19.1
+  asdf global erlang 19.1
+fi
+
+# Install Elixir
+
+if ! [ -d "$HOME/.asdf/plugins/elixir" ]; then
+  asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
+  asdf install elixir 1.3.4
+  asdf global elixir 1.3.4
+fi
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
