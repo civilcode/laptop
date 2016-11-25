@@ -93,6 +93,8 @@ brew "openssl"
 brew "rcm"
 brew "the_silver_searcher"
 brew "bash"
+brew "bash-completion"
+brew "watch"
 
 # Heroku
 brew "heroku-toolbelt"
@@ -113,7 +115,20 @@ brew "libyaml" # should come after openssl
 # Databases
 brew "postgres", restart_service: true
 brew "redis", restart_service: true
+
+# Desktop Apps
+cask "iterm2"
+cask "sourcetree"
+cask "google-chrome"
+cask "atom"
+
 EOF
+
+append_to_bashrc "
+  if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+  fi
+"
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
