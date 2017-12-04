@@ -137,6 +137,9 @@ brew "libxslt"
 brew "postgres", restart_service: true
 brew "redis", restart_service: true
 
+# Erlang dependencies
+brew "wxmac"
+
 # Desktop Apps
 cask "iterm2"
 cask "sourcetree"
