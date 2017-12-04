@@ -176,8 +176,8 @@ fi
 
 if ! [ -d "$HOME/.asdf/plugins/erlang" ]; then
   asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
-  asdf install erlang 19.1
-  asdf global erlang 19.1
+  asdf install erlang 20.1
+  asdf global erlang 20.1
 fi
 
 # Install Elixir
