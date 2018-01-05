@@ -202,7 +202,7 @@ fi
 if ! [ -d "$HOME/.asdf/plugins/nodejs" ]; then
   asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
   asdf install nodejs 7.4.0
-  asdf global elixir 7.4.0
+  asdf global nodejs 7.4.0
 fi
 
 if [ -f "$HOME/.laptop.local" ]; then
