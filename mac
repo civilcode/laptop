@@ -10,36 +10,21 @@ fancy_echo() {
   printf "\n$fmt\n" "$@"
 }
 
-append_to_bashrc() {
-  local text="$1" bashrc
+append_to_zshrc() {
+  local text="$1" zshrc
   local skip_new_line="${2:-0}"
 
-  if [ -w "$HOME/.bashrc.local" ]; then
-    bashrc="$HOME/.bashrc.local"
+  if [ -w "$HOME/.zshrc.local" ]; then
+    zshrc="$HOME/.zshrc.local"
   else
-    bashrc="$HOME/.bashrc"
+    zshrc="$HOME/.zshrc"
   fi
 
-  if ! grep -Fqs "$text" "$bashrc"; then
+  if ! grep -Fqs "$text" "$zshrc"; then
     if [ "$skip_new_line" -eq 1 ]; then
-      printf "%s\n" "$text" >> "$bashrc"
+      printf "%s\n" "$text" >> "$zshrc"
     else
-      printf "\n%s\n" "$text" >> "$bashrc"
-    fi
-  fi
-}
-
-append_to_bash_profile() {
-  local text="$1" bash_profile
-  local skip_new_line="${2:-0}"
-
-  bash_profile="$HOME/.bash_profile"
-
-  if ! grep -Fqs "$text" "$bash_profile"; then
-    if [ "$skip_new_line" -eq 1 ]; then
-      printf "%s\n" "$text" >> "$bash_profile"
-    else
-      printf "\n%s\n" "$text" >> "$bash_profile"
+      printf "\n%s\n" "$text" >> "$zshrc"
     fi
   fi
 }
@@ -52,11 +37,11 @@ if [ ! -d "$HOME/.bin/" ]; then
   mkdir "$HOME/.bin"
 fi
 
-if [ ! -f "$HOME/.bashrc" ]; then
-  touch "$HOME/.bashrc"
+if [ ! -f "$HOME/.zshrc" ]; then
+  touch "$HOME/.zshrc"
 fi
 
-append_to_bashrc 'export PATH="$HOME/.bin:$PATH"'
+append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
 
 HOMEBREW_PREFIX="/usr/local"
 
@@ -69,6 +54,29 @@ else
   sudo chflags norestricted "$HOMEBREW_PREFIX"
   sudo chown -R "$LOGNAME:admin" "$HOMEBREW_PREFIX"
 fi
+
+update_shell() {
+  local shell_path;
+  shell_path="$(which zsh)"
+
+  fancy_echo "Changing your shell to zsh ..."
+  if ! grep "$shell_path" /etc/shells > /dev/null 2>&1 ; then
+    fancy_echo "Adding '$shell_path' to /etc/shells"
+    sudo sh -c "echo $shell_path >> /etc/shells"
+  fi
+  sudo chsh -s "$shell_path" "$USER"
+}
+
+case "$SHELL" in
+  */zsh)
+    if [ "$(which zsh)" != '/usr/local/bin/zsh' ] ; then
+      update_shell
+    fi
+    ;;
+  *)
+    update_shell
+    ;;
+esac
 
 gem_install_or_update() {
   if gem list "$1" --installed > /dev/null; then
@@ -84,9 +92,9 @@ if ! command -v brew >/dev/null; then
     curl -fsS \
       'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
 
-    append_to_bashrc '# recommended by brew doctor'
+    append_to_zshrc '# recommended by brew doctor'
 
-    append_to_bashrc 'export PATH="/usr/local/bin:$PATH"' 1
+    append_to_zshrc 'export PATH="/usr/local/bin:$PATH"' 1
 
     export PATH="/usr/local/bin:$PATH"
 fi
@@ -97,7 +105,7 @@ if brew list | grep -Fq brew-cask; then
 fi
 
 fancy_echo "Updating Homebrew formulae ..."
-brew update
+brew update --force
 brew bundle --file=- <<EOF
 tap "thoughtbot/formulae"
 tap "homebrew/services"
@@ -108,15 +116,17 @@ brew "autoconf"
 brew "git"
 brew "openssl"
 brew "rcm"
+brew "reattach-to-user-namespace"
 brew "the_silver_searcher"
 brew "bash"
 brew "bash-completion"
 brew "watch"
 brew "libtool"
 brew "unixodbc"
+brew "tmux"
 
 # Heroku
-brew "heroku-toolbelt"
+brew "heroku"
 brew "parity"
 
 # GitHub
@@ -146,26 +156,22 @@ cask "sourcetree"
 cask "google-chrome"
 cask "atom"
 
-EOF
+brew "zsh"
+brew "zsh-completions"
 
-append_to_bashrc "
-  if [ -f $(brew --prefix)/etc/bash_completion ]; then
-    . $(brew --prefix)/etc/bash_completion
-  fi
-"
+EOF
 
 # ASDF - version manager
 
 if ! [ -d "$HOME/.asdf" ]; then
   git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.4.0
 
-  append_to_bash_profile ". $HOME/.asdf/asdf.sh"
-  append_to_bash_profile ". $HOME/.asdf/completions/asdf.bash"
+  append_to_zshrc ". $HOME/.asdf/asdf.sh"
 fi
 
 # Ensure ADSF is loaded
 
-source ~/.bash_profile
+source ~/.zshrc
 
 # Install Ruby
 
@@ -191,7 +197,17 @@ if ! [ -d "$HOME/.asdf/plugins/elixir" ]; then
   asdf global elixir 1.5.1
 fi
 
+# Install NodeJS
+
+if ! [ -d "$HOME/.asdf/plugins/nodejs" ]; then
+  asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+  asdf install nodejs 7.4.0
+  asdf global nodejs 7.4.0
+fi
+
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
   . "$HOME/.laptop.local"
 fi
+
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
