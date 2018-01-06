@@ -170,8 +170,7 @@ if ! [ -d "$HOME/.asdf" ]; then
 fi
 
 # Ensure ADSF is loaded
-
-source ~/.zshrc
+source "$HOME/.asdf/asdf.sh"
 
 # Install Ruby
 
@@ -210,4 +209,6 @@ if [ -f "$HOME/.laptop.local" ]; then
   . "$HOME/.laptop.local"
 fi
 
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+if [ ! -d "$HOME/.oh-my-zsh/" ]; then
+  sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+fi
