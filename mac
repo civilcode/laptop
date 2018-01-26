@@ -213,3 +213,9 @@ fi
 if [ ! -d "$HOME/.oh-my-zsh/" ]; then
   sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
+
+# Setup Aliases
+
+if ! grep --quiet "source $HOME/.aliases" $HOME/.zshrc;  then
+    append_to_zshrc 'source $HOME/.aliases'
+fi
