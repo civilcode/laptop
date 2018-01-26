@@ -219,3 +219,9 @@ fi
 if ! grep --quiet "source $HOME/.aliases" $HOME/.zshrc;  then
     append_to_zshrc 'source $HOME/.aliases'
 fi
+
+# Setup Env Vars
+
+if ! grep --quiet "source $HOME/.env_vars" $HOME/.zshrc;  then
+    append_to_zshrc 'source $HOME/.env_vars'
+fi
