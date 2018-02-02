@@ -214,14 +214,8 @@ if [ ! -d "$HOME/.oh-my-zsh/" ]; then
   sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
-# Setup Aliases
+# Setup common config for .zsh_civilcode
 
-if ! grep --quiet "source $HOME/.aliases" $HOME/.zshrc;  then
-    append_to_zshrc 'source $HOME/.aliases'
-fi
-
-# Setup Env Vars
-
-if ! grep --quiet "source $HOME/.env_vars" $HOME/.zshrc;  then
-    append_to_zshrc 'source $HOME/.env_vars'
+if ! grep --quiet "source $HOME/.civilcode.zshrc" $HOME/.zshrc;  then
+    append_to_zshrc 'source $HOME/.civilcode.zshrc'
 fi
