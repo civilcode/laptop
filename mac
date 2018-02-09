@@ -217,5 +217,6 @@ fi
 # Setup common config for .zsh_civilcode
 
 if ! grep --quiet "source $HOME/.civilcode.zshrc" $HOME/.zshrc;  then
+    touch "$HOME/.civilcode.zshrc"
     append_to_zshrc 'source $HOME/.civilcode.zshrc'
 fi
