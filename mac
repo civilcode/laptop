@@ -118,8 +118,6 @@ brew "openssl"
 brew "rcm"
 brew "reattach-to-user-namespace"
 brew "the_silver_searcher"
-brew "bash"
-brew "bash-completion"
 brew "watch"
 brew "libtool"
 brew "unixodbc"
@@ -135,17 +133,10 @@ brew "hub"
 # Image manipulation
 brew "imagemagick"
 
-# Testing
-brew "phantomjs"
-
 # Programming languages
 brew "readline"
 brew "libyaml" # should come after openssl
 brew "libxslt"
-
-# Databases
-brew "postgres", restart_service: true
-brew "redis", restart_service: true
 
 # Erlang dependencies
 brew "wxmac"
