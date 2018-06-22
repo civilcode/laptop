@@ -197,6 +197,12 @@ if [ ! -d "$HOME/.oh-my-zsh/" ]; then
   sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
+# Setup Development directory. This is where all CivilCode development takes place.
+
+if [ ! -d "$HOME/Development" ]; then
+  mkdir ~/Development
+fi
+
 # Setup common config for .zsh_civilcode
 
 if ! grep --quiet "source $HOME/.civilcode.zshrc" $HOME/.zshrc;  then
