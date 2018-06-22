@@ -98,6 +98,11 @@ can be used in your `~/.laptop.local`.
 See the [thoughtbot wiki](https://github.com/thoughtbot/laptop/wiki)
 for more customization examples.
 
+How to test
+-----------
+
+To test this script on a clean install. Use the VM Fusion virtual machine image we have setup.
+
 Credits
 -------
 
