@@ -168,16 +168,16 @@ source "$HOME/.asdf/asdf.sh"
 
 if ! [ -d "$HOME/.asdf/plugins/erlang" ]; then
   asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
-  asdf install erlang 20.1
-  asdf global erlang 20.1
+  asdf install erlang 21.0
+  asdf global erlang 21.0
 fi
 
 # Install Elixir
 
 if ! [ -d "$HOME/.asdf/plugins/elixir" ]; then
   asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
-  asdf install elixir 1.5.1
-  asdf global elixir 1.5.1
+  asdf install elixir 1.6.6
+  asdf global elixir 1.6.6
 fi
 
 # Install NodeJS
