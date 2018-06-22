@@ -164,14 +164,6 @@ fi
 # Ensure ADSF is loaded
 source "$HOME/.asdf/asdf.sh"
 
-# Install Ruby
-
-if ! [ -d "$HOME/.asdf/plugins/ruby" ]; then
-  asdf plugin-add ruby https://github.com/asdf-vm/asdf-ruby.git
-  LDFLAGS="-L/usr/local/opt/openssl/lib" CPPFLAGS="-I/usr/local/opt/openssl/include" asdf install ruby 2.3.3
-  asdf global ruby 2.3.3
-fi
-
 # Install Erlang
 
 if ! [ -d "$HOME/.asdf/plugins/erlang" ]; then
