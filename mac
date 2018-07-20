@@ -113,6 +113,7 @@ tap "homebrew/services"
 # Unix
 brew "automake"
 brew "autoconf"
+brew "direnv"
 brew "git"
 brew "openssl"
 brew "rcm"
