@@ -111,18 +111,22 @@ tap "thoughtbot/formulae"
 tap "homebrew/services"
 
 # Unix
-brew "automake"
 brew "autoconf"
+brew "automake"
+brew "coreutils"
 brew "direnv"
 brew "git"
+brew "libtool"
 brew "openssl"
 brew "rcm"
 brew "reattach-to-user-namespace"
 brew "the_silver_searcher"
-brew "watch"
-brew "libtool"
-brew "unixodbc"
 brew "tmux"
+brew "tree"
+brew "unixodbc"
+brew "watch"
+brew "zsh"
+brew "zsh-completions"
 
 # Heroku
 brew "heroku"
@@ -135,23 +139,25 @@ brew "hub"
 brew "imagemagick"
 
 # Programming languages
-brew "readline"
-brew "libyaml" # should come after openssl
 brew "libxslt"
+brew "libyaml" # should come after openssl
+brew "readline"
 
 # Erlang dependencies
 brew "wxmac"
 
 # Desktop Apps
 cask "1password"
-cask "iterm2"
-cask "sourcetree"
-cask "google-chrome"
 cask "atom"
-
-brew "zsh"
-brew "zsh-completions"
-
+cask "google-drive-file-stream"
+cask "google-chrome"
+cask "gpg-suite"
+cask "iterm2"
+cask "keybase"
+cask "postman"
+cask "slack"
+cask "sourcetree"
+cask "zoomus"
 EOF
 
 # ASDF - version manager
