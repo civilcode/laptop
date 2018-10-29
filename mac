@@ -125,7 +125,7 @@ brew "zsh"
 brew "zsh-completions"
 
 # Heroku
-brew "heroku"
+brew "heroku/brew/heroku"
 brew "parity"
 
 # GitHub
