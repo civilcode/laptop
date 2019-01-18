@@ -123,6 +123,7 @@ brew "zsh"
 brew "zsh-completions"
 
 # Development tools
+brew "adr-tools"
 brew "git"
 brew "hub"
 brew "the_silver_searcher"
