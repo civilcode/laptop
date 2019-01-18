@@ -110,26 +110,28 @@ tap "homebrew/services"
 brew "autoconf"
 brew "automake"
 brew "coreutils"
-brew "direnv"
-brew "git"
 brew "libtool"
 brew "openssl"
+brew "unixodbc"
+
+# Shell
 brew "rcm"
 brew "reattach-to-user-namespace"
-brew "the_silver_searcher"
 brew "tmux"
 brew "tree"
-brew "unixodbc"
-brew "watchman"
 brew "zsh"
 brew "zsh-completions"
+
+# Development tools
+brew "adr-tools"
+brew "git"
+brew "hub"
+brew "the_silver_searcher"
+brew "watchman"
 
 # Heroku
 brew "heroku/brew/heroku"
 brew "parity"
-
-# GitHub
-brew "hub"
 
 # Image manipulation
 brew "imagemagick"
