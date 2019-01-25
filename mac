@@ -150,6 +150,9 @@ cask "sourcetree"
 cask "zoomus"
 EOF
 
+# Atom packages
+apm install Sublime-Style-Column-Selection atom-elixir language-elixir
+
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
   . "$HOME/.laptop.local"
