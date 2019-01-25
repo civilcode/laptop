@@ -74,15 +74,6 @@ case "$SHELL" in
     ;;
 esac
 
-gem_install_or_update() {
-  if gem list "$1" --installed > /dev/null; then
-    gem update "$@"
-  else
-    gem install "$@"
-    rbenv rehash
-  fi
-}
-
 if ! command -v brew >/dev/null; then
   fancy_echo "Installing Homebrew ..."
     curl -fsS \
@@ -157,42 +148,6 @@ cask "slack"
 cask "sourcetree"
 cask "zoomus"
 EOF
-
-# ASDF - version manager
-
-if ! [ -d "$HOME/.asdf" ]; then
-  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.4.0
-
-  append_to_zshrc ". $HOME/.asdf/asdf.sh"
-fi
-
-# Ensure ADSF is loaded
-source "$HOME/.asdf/asdf.sh"
-
-# Install Erlang
-
-if ! [ -d "$HOME/.asdf/plugins/erlang" ]; then
-  asdf plugin-add erlang https://github.com/asdf-vm/asdf-erlang.git
-  asdf install erlang 21.0
-  asdf global erlang 21.0
-fi
-
-# Install Elixir
-
-if ! [ -d "$HOME/.asdf/plugins/elixir" ]; then
-  asdf plugin-add elixir https://github.com/asdf-vm/asdf-elixir.git
-  asdf install elixir 1.6.6
-  asdf global elixir 1.6.6
-fi
-
-# Install NodeJS
-
-if ! [ -d "$HOME/.asdf/plugins/nodejs" ]; then
-  asdf plugin-add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-  bash ~/.asdf/plugins/nodejs/bin/import-release-team-keyring
-  asdf install nodejs 7.4.0
-  asdf global nodejs 7.4.0
-fi
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
