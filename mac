@@ -203,7 +203,11 @@ install_oh_my_zsh() {
 }
 
 setup_pairing_account() {
+  #Prepend zsh with ZSH_DISABME_COMPFIX setting
+  printf '%s\n%s\n' "ZSH_DISABLE_COMPFIX=true" "$(cat ~/.zshrc)" > ~/.zshrc
 
+  # TODO: change /usr/local/bin/zsh to /bin/zsh
+  sudo chsh -s $(whereis zsh) "$USER"
 }
 
 ##########
