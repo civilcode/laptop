@@ -114,6 +114,7 @@ install_homebrew() {
     cask "sourcetree"
     cask "zoomus"
     EOF
+  fi
 }
 
 update_shell() {
