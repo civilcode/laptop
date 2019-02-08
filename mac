@@ -220,7 +220,6 @@ set -e
 
 prepare_folders
 prepare_zshrc
-install_oh_my_zsh
 
 if [ $1 == "ANOTHER_USER=1" ]; then
   setup_pairing_account
@@ -229,3 +228,5 @@ else
 fi
 
 setup_atom
+
+install_oh_my_zsh
