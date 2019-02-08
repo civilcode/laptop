@@ -33,13 +33,13 @@ install_homebrew() {
     if ! [ -r "$HOMEBREW_PREFIX" ]; then
         sudo chown -R "$LOGNAME:admin" /usr/local
     fi
-    else
+  else
     sudo mkdir "$HOMEBREW_PREFIX"
     sudo chflags norestricted "$HOMEBREW_PREFIX"
     sudo chown -R "$LOGNAME:admin" "$HOMEBREW_PREFIX"
-    fi
+  fi
 
-    if ! command -v brew >/dev/null; then
+  if ! command -v brew >/dev/null; then
     fancy_echo "Installing Homebrew ..."
         curl -fsS \
         'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
@@ -49,16 +49,16 @@ install_homebrew() {
         append_to_zshrc 'export PATH="/usr/local/bin:$PATH"' 1
 
         export PATH="/usr/local/bin:$PATH"
-    fi
+  fi
 
-    if brew list | grep -Fq brew-cask; then
+  if brew list | grep -Fq brew-cask; then
     fancy_echo "Uninstalling old Homebrew-Cask ..."
     brew uninstall --force brew-cask
-    fi
+  fi
 
-    fancy_echo "Updating Homebrew formulae ..."
-    brew update --force
-    brew bundle --file=- <<EOF
+  fancy_echo "Updating Homebrew formulae ..."
+  brew update --force
+  brew bundle --file=- <<EOF
     tap "thoughtbot/formulae"
     tap "homebrew/services"
 
@@ -113,8 +113,7 @@ install_homebrew() {
     cask "slack"
     cask "sourcetree"
     cask "zoomus"
-    EOF
-  fi
+EOF
 }
 
 update_shell() {
@@ -194,7 +193,7 @@ setup_atom(){
      showOnStartup: false
    whitespace:
      ignoreWhitespaceOnCurrentLine: false
- EOF
+EOF
 }
 
 install_oh_my_zsh() {
@@ -223,7 +222,7 @@ prepare_folders
 prepare_zshrc
 install_oh_my_zsh
 
-if $1 == "ANOTHER_USER=1"; then
+if [ $1 == "ANOTHER_USER=1" ]; then
   setup_pairing_account
 else
   install_homebrew
