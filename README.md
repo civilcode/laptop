@@ -14,8 +14,10 @@ We support:
 * macOS Sierra (10.12)
 * macOS High Sierra (10.13)
 
-Install
+Install (main user account)
 -------
+
+Make sure Atom is already installed on the system beforehand.
 
 Download, review, then execute the script:
 
@@ -25,9 +27,19 @@ less mac
 sh mac 2>&1 | tee ~/laptop.log
 ```
 
-Optionally, [install civilcode/dotfiles][dotfiles].
+The script won't install homebrew and its packages as the should be already
+installed by the main user account.
 
-[dotfiles]: https://github.com/civilcode/dotfiles#install
+Install (pairing account)
+-------
+
+Download, review, then execute the script:
+
+```sh
+curl --remote-name https://raw.githubusercontent.com/civilcode/laptop/master/mac
+less mac
+sh mac ANOTHER_USER=1 2>&1| tee ~/laptop.log
+```
 
 Debugging
 ---------

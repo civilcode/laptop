@@ -25,31 +25,96 @@ append_to_zshrc() {
   fi
 }
 
-trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
-set -e
+install_homebrew() {
+  HOMEBREW_PREFIX="/usr/local"
 
-if [ ! -d "$HOME/.bin/" ]; then
-  mkdir "$HOME/.bin"
-fi
-
-if [ ! -f "$HOME/.zshrc" ]; then
-  touch "$HOME/.zshrc"
-fi
-
-append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
-
-HOMEBREW_PREFIX="/usr/local"
-
-if [ -d "$HOMEBREW_PREFIX" ]; then
-  if ! [ -r "$HOMEBREW_PREFIX" ]; then
-    sudo chown -R "$LOGNAME:admin" /usr/local
+  if [ -d "$HOMEBREW_PREFIX" ]; then
+    if ! [ -r "$HOMEBREW_PREFIX" ]; then
+        sudo chown -R "$LOGNAME:admin" /usr/local
+    fi
+  else
+    sudo mkdir "$HOMEBREW_PREFIX"
+    sudo chflags norestricted "$HOMEBREW_PREFIX"
+    sudo chown -R "$LOGNAME:admin" "$HOMEBREW_PREFIX"
   fi
-else
-  sudo mkdir "$HOMEBREW_PREFIX"
-  sudo chflags norestricted "$HOMEBREW_PREFIX"
-  sudo chown -R "$LOGNAME:admin" "$HOMEBREW_PREFIX"
-fi
+
+  if ! command -v brew >/dev/null; then
+    fancy_echo "Installing Homebrew ..."
+        curl -fsS \
+        'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
+
+        append_to_zshrc '# recommended by brew doctor'
+
+        append_to_zshrc 'export PATH="/usr/local/bin:$PATH"' 1
+
+        export PATH="/usr/local/bin:$PATH"
+  fi
+
+  if brew list | grep -Fq brew-cask; then
+    fancy_echo "Uninstalling old Homebrew-Cask ..."
+    brew uninstall --force brew-cask
+  fi
+
+  fancy_echo "Updating Homebrew formulae ..."
+  brew update --force
+  brew bundle --file=- <<EOF
+    tap "thoughtbot/formulae"
+    tap "homebrew/services"
+
+    # Unix
+    brew "autoconf"
+    brew "automake"
+    brew "coreutils"
+    brew "libtool"
+    brew "openssl"
+    brew "unixodbc"
+
+    # Shell
+    brew "rcm"
+    brew "reattach-to-user-namespace"
+    brew "tmux"
+    brew "tree"
+    brew "zsh"
+    brew "zsh-completions"
+
+    # Development tools
+    brew "adr-tools"
+    brew "git"
+    brew "hub"
+    brew "the_silver_searcher"
+    brew "watchman"
+
+    # Heroku
+    brew "heroku/brew/heroku"
+    brew "parity"
+
+    # Image manipulation
+    brew "imagemagick"
+
+    # Programming languages
+    brew "elixir"
+    brew "libxslt"
+    brew "libyaml" # should come after openssl
+    brew "readline"
+
+    # Erlang dependencies
+    brew "wxmac"
+
+    # Desktop Apps
+    cask "1password"
+    cask "atom"
+    cask "google-drive-file-stream"
+    cask "google-chrome"
+    cask "gpg-suite"
+    cask "iterm2"
+    cask "keybase"
+    cask "postman"
+    cask "slack"
+    cask "sourcetree"
+    cask "zoomus"
+EOF
+}
 
 update_shell() {
   local shell_path;
@@ -63,140 +128,107 @@ update_shell() {
   sudo chsh -s "$shell_path" "$USER"
 }
 
-case "$SHELL" in
-  */zsh)
-    if [ "$(which zsh)" != '/usr/local/bin/zsh' ] ; then
+
+prepare_folders() {
+  if [ ! -d "$HOME/.bin/" ]; then
+    mkdir "$HOME/.bin"
+  fi
+
+  if [ ! -f "$HOME/.zshrc" ]; then
+    touch "$HOME/.zshrc"
+  fi
+
+  # Setup Development directory. This is where all CivilCode development takes place.
+  if [ ! -d "$HOME/Development" ]; then
+    mkdir ~/Development
+  fi
+
+  if [ -f "$HOME/.laptop.local" ]; then
+    fancy_echo "Running your customizations from ~/.laptop.local ..."
+    . "$HOME/.laptop.local"
+  fi
+}
+
+prepare_zshrc() {
+  append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
+
+  case "$SHELL" in
+    */zsh)
+      if [ "$(which zsh)" != '/usr/local/bin/zsh' ] ; then
+        update_shell
+      fi
+      ;;
+    *)
       update_shell
-    fi
-    ;;
-  *)
-    update_shell
-    ;;
-esac
-
-if ! command -v brew >/dev/null; then
-  fancy_echo "Installing Homebrew ..."
-    curl -fsS \
-      'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
-
-    append_to_zshrc '# recommended by brew doctor'
-
-    append_to_zshrc 'export PATH="/usr/local/bin:$PATH"' 1
-
-    export PATH="/usr/local/bin:$PATH"
-fi
-
-if brew list | grep -Fq brew-cask; then
-  fancy_echo "Uninstalling old Homebrew-Cask ..."
-  brew uninstall --force brew-cask
-fi
-
-fancy_echo "Updating Homebrew formulae ..."
-brew update --force
-brew bundle --file=- <<EOF
-tap "thoughtbot/formulae"
-tap "homebrew/services"
-
-# Unix
-brew "autoconf"
-brew "automake"
-brew "coreutils"
-brew "libtool"
-brew "openssl"
-brew "unixodbc"
-
-# Shell
-brew "rcm"
-brew "reattach-to-user-namespace"
-brew "tmux"
-brew "tree"
-brew "zsh"
-brew "zsh-completions"
-
-# Development tools
-brew "adr-tools"
-brew "git"
-brew "hub"
-brew "the_silver_searcher"
-brew "watchman"
-
-# Heroku
-brew "heroku/brew/heroku"
-brew "parity"
-
-# Image manipulation
-brew "imagemagick"
-
-# Programming languages
-brew "elixir"
-brew "libxslt"
-brew "libyaml" # should come after openssl
-brew "readline"
-
-# Erlang dependencies
-brew "wxmac"
-
-# Desktop Apps
-cask "1password"
-cask "atom"
-cask "google-drive-file-stream"
-cask "google-chrome"
-cask "gpg-suite"
-cask "iterm2"
-cask "keybase"
-cask "postman"
-cask "slack"
-cask "sourcetree"
-cask "zoomus"
-EOF
+      ;;
+  esac
+}
 
 # Atom packages and config
-apm install Sublime-Style-Column-Selection atom-elixir language-elixir
+setup_atom(){
+ apm install Sublime-Style-Column-Selection atom-elixir language-elixir
 
-cat <<EOF > ~/.atom/config.cson
-"*":
-  core:
-    audioBeep: false
-    closeEmptyWindows: false
-    telemetryConsent: "no"
-    ignoredNames: [
-      ".git"
-      ".hg"
-      ".svn"
-      ".DS_Store"
-      "._*"
-      "Thumbs.db"
-      "desktop.ini"
-      "**/cover/*.html"
-      "**/doc/*.html"
-    ]
-  editor:
-    autoIndentOnPaste: false
-    preferredLineLength: 100
-    showInvisibles: true
-  welcome:
-    showOnStartup: false
-  whitespace:
-    ignoreWhitespaceOnCurrentLine: false
+ cat <<EOF > ~/.atom/config.cson
+ "*":
+   core:
+     audioBeep: false
+     closeEmptyWindows: false
+     telemetryConsent: "no"
+     ignoredNames: [
+       ".git"
+       ".hg"
+       ".svn"
+       ".DS_Store"
+       "._*"
+       "Thumbs.db"
+       "desktop.ini"
+       "**/cover/*.html"
+       "**/doc/*.html"
+     ]
+   editor:
+     autoIndentOnPaste: false
+     preferredLineLength: 100
+     showInvisibles: true
+   welcome:
+     showOnStartup: false
+   whitespace:
+     ignoreWhitespaceOnCurrentLine: false
 EOF
+}
 
-if [ -f "$HOME/.laptop.local" ]; then
-  fancy_echo "Running your customizations from ~/.laptop.local ..."
-  . "$HOME/.laptop.local"
+install_oh_my_zsh() {
+  if [ ! -d "$HOME/.oh-my-zsh/" ]; then
+    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    cp ~/.zshrc ~/.zshrc.orig
+    cat ~/.oh-my-zsh/templates/zshrc.zsh-template >>  ~/.zshrc
+  fi
+}
+
+setup_pairing_account() {
+  #Prepend zsh with ZSH_DISABME_COMPFIX setting
+  printf '%s\n%s\n' "ZSH_DISABLE_COMPFIX=true" "$(cat ~/.zshrc)" > ~/.zshrc
+
+  # TODO: change /usr/local/bin/zsh to /bin/zsh
+  sudo chsh -s $(whereis zsh) "$USER"
+}
+
+##########
+## SCRIPT
+##########
+
+trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
+
+set -e
+
+prepare_folders
+prepare_zshrc
+
+if [ $1 == "ANOTHER_USER=1" ]; then
+  setup_pairing_account
+else
+  install_homebrew
 fi
 
-if [ ! -d "$HOME/.oh-my-zsh/" ]; then
-  sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-fi
+setup_atom
+install_oh_my_zsh
 
-# Setup Development directory. This is where all CivilCode development takes place.
-
-if [ ! -d "$HOME/Development" ]; then
-  mkdir ~/Development
-fi
-
-# Setup common config for civilcode
-
-if ! grep --quiet "source $HOME/.civilcode.zshrc" $HOME/.zshrc;  then
-    append_to_zshrc '[[ -f ~/.civilcode.shrc ]] && source $HOME/.civilcode.shrc'
-fi
