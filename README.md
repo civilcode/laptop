@@ -13,7 +13,7 @@ We support:
 * macOS High Sierra (10.13)
 * macOS Mojave (10.14)
 
-## Install (main user account)
+## Install (first account, i.e. admin)
 
 Make sure Atom is already installed on the system beforehand.
 
@@ -26,7 +26,7 @@ Download, review, then execute the script:
 The script won't install homebrew and its packages as the should be already
 installed by the main user account.
 
-## Install (pairing account)
+## Install (second and additional accounts, i.e. personal user)
 
 Download, review, then execute the script:
 
