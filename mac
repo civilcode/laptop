@@ -198,7 +198,9 @@ EOF
 
 install_oh_my_zsh() {
   if [ ! -d "$HOME/.oh-my-zsh/" ]; then
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+    cp ~/.zshrc ~/.zshrc.orig
+    cat ~/.oh-my-zsh/templates/zshrc.zsh-template >>  ~/.zshrc
   fi
 }
 
@@ -228,5 +230,5 @@ else
 fi
 
 setup_atom
-
 install_oh_my_zsh
+
