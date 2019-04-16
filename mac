@@ -84,6 +84,7 @@ install_homebrew() {
     brew "hub"
     brew "the_silver_searcher"
     brew "watchman"
+    brew "xsv"
 
     # Heroku
     brew "heroku/brew/heroku"
