@@ -117,6 +117,10 @@ install_homebrew() {
 EOF
 }
 
+install_gems() {
+  gem install docker-sync
+}
+
 update_shell() {
   local shell_path;
   shell_path="$(which zsh)"
@@ -228,8 +232,8 @@ if [ $1 == "ANOTHER_USER=1" ]; then
   setup_pairing_account
 else
   install_homebrew
+  install_gems
 fi
 
 setup_atom
 install_oh_my_zsh
-
