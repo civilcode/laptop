@@ -106,3 +106,7 @@ The CivilCode Inc. laptop script is based on and inspired by
 
 thoughtbot's original work remains covered under an
 [MIT License](https://github.com/thoughtbot/laptop/blob/c997c4fb5a986b22d6c53214d8f219600a4561ee/LICENSE).
+
+## About CivilCode Inc
+
+CivilCode Inc. is a [custom software development](https://www.civilcode.io) studio developing tailored business applications in [Elixir](http://elixir-lang.org/) and [Phoenix](http://www.phoenixframework.org/) in Montreal, Canada.
